@@ -1,6 +1,8 @@
 package org.example.employeeservice.employees;
 
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -41,15 +43,18 @@ public class EmployeeRepository {
     }
 
     public Employee create(Employee e) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.sql("INSERT INTO Employees(first_name, last_name, email, department_id, created_at, updated_at) VALUES(:firstName, :lastName, :email, :departmentId, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)")
                 .param("firstName", e.firstName())
                 .param("lastName", e.lastName())
                 .param("email", e.email())
                 .param("departmentId", e.departmentId())
-                .update();
-        Long id = jdbc.sql("SELECT IDENTITY()")
-                .query(Long.class)
-                .single();
+                .update(keyHolder);
+
+        // Extract the ID specifically from the key map
+        Number key = (Number) keyHolder.getKeys().get("ID");
+        Long id = key != null ? key.longValue() : null;
+
         return new Employee(id, e.firstName(), e.lastName(), e.email(), e.departmentId());
     }
 

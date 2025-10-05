@@ -1,6 +1,8 @@
 package org.example.departmentservice.departments;
 
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -37,14 +39,16 @@ public class DepartmentRepository {
     }
 
     public Department create(Department d) {
-        // Insert and then retrieve generated id (H2 specific IDENTITY())
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.sql("INSERT INTO Departments(name, description, created_at, updated_at) VALUES(:name, :description, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)")
                 .param("name", d.name())
                 .param("description", d.description())
-                .update();
-        Long id = jdbc.sql("SELECT IDENTITY()")
-                .query(Long.class)
-                .single();
+                .update(keyHolder);
+
+        // Extract the ID specifically from the key map
+        Number key = (Number) keyHolder.getKeys().get("ID");
+        Long id = key != null ? key.longValue() : null;
+
         return new Department(id, d.name(), d.description());
     }
 
