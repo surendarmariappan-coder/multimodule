@@ -44,8 +44,9 @@ Requirements:
    - Import Spring Boot,Spring Cloud BOMs, and related BOMs via dependencyManagement block 
    - Add shared service dependencies (example: web, jdbc, validation, test, etc) at the root for all application modules
 2. Module adjustments:
-   - common is a java-library that exposes cross‑cutting code (exceptions, @ControllerAdvice)
+   - common is a java-library that exposes cross‑cutting code (exceptions, @ControllerAdvice and other common functionalties across services)
    - Application modules depend on project(':common')
+   - Include common module to be scanned across all dependent modules
    - Remove duplicated dependencies from service modules that are now provided by the root
    - Keep module‑specific configuration minimal (description, application properties)
 3. Build and verify from the root: ./gradlew clean build
