@@ -1,0 +1,65 @@
+plugins {
+    id 'base'
+    id 'org.springframework.boot' version '3.5.6' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+// Manage versions via BOMs at the root; inherited by subprojects that apply the plugin
+apply plugin: 'io.spring.dependency-management'
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.6"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2024.0.3"
+    }
+}
+
+subprojects {
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
+
+    group = 'org.example'
+    version = '0.0.1-SNAPSHOT'
+
+    // Configure the Java toolchain only for projects that apply a Java plugin
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+
+}
+
+// Shared dependencies for the service modules (only apply to services, not common)
+configure([project(":department-service"), project(":employee-service")]) {
+    apply plugin: 'org.springframework.boot'
+
+    dependencies {
+        implementation project(':common')
+
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+        runtimeOnly 'com.h2database:h2'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+}
+
+// Aggregate: ensure root build builds all modules (safely wire after each project is evaluated)
+tasks.named("build") {
+    group = "build"
+    description = "Builds all subprojects"
+    dependsOn(subprojects.collect {it.tasks.named("build")})
+}
