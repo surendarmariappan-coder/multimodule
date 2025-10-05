@@ -1,2 +1,6 @@
 // Configuration is centralized in the root build.gradle for all modules.
 description = 'DepartmentService'
+
+base {
+    archivesName = 'department-service'
+}
