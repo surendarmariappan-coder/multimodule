@@ -4,3 +4,7 @@ description = 'DepartmentService'
 base {
     archivesName = 'department-service'
 }
+
+dependencies {
+    implementation project(':employee-service')
+}
