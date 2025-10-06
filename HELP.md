@@ -26,11 +26,15 @@ Paste the following into your LLM and replace the placeholders with details of y
 You are an expert Spring Boot microservice developer. Convert my separate Gradle‑based Spring Boot services into a single multi‑module Gradle project so I can:
 - Share code and dependencies across services
 - Build a reusable JAR (common module) for cross‑cutting concerns (e.g., exceptions/handlers)
-- Keep each service’s logic independent and runnable on its own
+- Keep one service as primary and add others as modules to the primary service
+- Centralize dependency management at the root build.gradle
+- Run each service as a Spring Boot app
+- Publish the common JAR locally for other projects to consume
 
 My current services:
 - Service A: <name/path, key dependencies, Java version>
 - Service B: <name/path, key dependencies, Java version>
+- Add Service A as a primary service and add Service B as a module
 - (Add more if needed)
 
 Target layout:
