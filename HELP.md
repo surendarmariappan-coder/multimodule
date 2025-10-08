@@ -283,3 +283,8 @@ Consumers can then use: implementation 'org.example:common:0.0.1-SNAPSHOT'
 - Use the LLM Prompt Template to convert additional services to modules.
 - Move any other cross‑cutting code (logging config, error codes, security) into common.
 - Add CI to build modules from root and optionally publish the common JAR.
+
+---
+NOTE: For a ready-to-use prompt that generates this multi-module Spring Boot structure via an LLM, see LLM_SCRIPT.md at the project root.
+---
+

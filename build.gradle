@@ -13,10 +13,13 @@ allprojects {
 // Manage versions via BOMs at the root; inherited by subprojects that apply the plugin
 apply plugin: 'io.spring.dependency-management'
 
+// Apply Java and Spring Boot only to the root to assemble an executable bootJar
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+
 dependencyManagement {
     imports {
         mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.6"
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2024.0.3"
     }
 }
 
@@ -41,8 +44,7 @@ subprojects {
 
 // Shared dependencies for the service modules (only apply to services, not common)
 configure([project(":department-service"), project(":employee-service")]) {
-    apply plugin: 'org.springframework.boot'
-
+    // Don't apply Spring Boot plugin here; these are library modules
     dependencies {
         implementation project(':common')
 
@@ -57,9 +59,34 @@ configure([project(":department-service"), project(":employee-service")]) {
     }
 }
 
+// Root assembly module depends on service modules to include them in the executable jar
+dependencies {
+    implementation project(':common')
+    implementation project(':employee-service')
+    implementation project(':department-service')
+
+    // Root needs the starters explicitly so bootRun/bootJar can resolve versions (managed by BOM)
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    runtimeOnly 'com.h2database:h2'
+}
+
+// Optional: set the main class explicitly to help bootJar
+springBoot {
+    mainClass = 'org.example.AssemblyApplication'
+}
+
 // Aggregate: ensure root build builds all modules (safely wire after each project is evaluated)
 tasks.named("build") {
     group = "build"
     description = "Builds all subprojects"
     dependsOn(subprojects.collect {it.tasks.named("build")})
+}
+
+// Convenience run task for IntelliJ: run the root Spring Boot app
+tasks.register("run") {
+    group = "application"
+    description = "Runs the root Spring Boot application"
+    dependsOn("bootRun")
 }
