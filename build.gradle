@@ -30,6 +30,13 @@ subprojects {
     group = 'org.example'
     version = '0.0.1-SNAPSHOT'
 
+    // Ensure BOM is visible to subprojects for version alignment
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.6"
+        }
+    }
+
     // Configure the Java toolchain only for projects that apply a Java plugin
     java {
         toolchain {

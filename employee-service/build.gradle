@@ -5,10 +5,6 @@ base {
     archivesName = 'employee-service'
 }
 
-// Build this module as a plain library JAR so it can be used as a dependency
-bootJar {
-    enabled = false
-}
 jar {
     enabled = true
 }
