@@ -43,6 +43,12 @@ subprojects {
             languageVersion = JavaLanguageVersion.of(21)
         }
     }
+
+    // Add compiler flag to preserve parameter names
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << '-parameters'
+    }
+
     tasks.named('test') {
         useJUnitPlatform()
     }

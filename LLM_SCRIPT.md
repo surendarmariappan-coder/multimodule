@@ -41,6 +41,8 @@ Fill these before running the instructions:
 - Ensure the root project builds and runs successfully.
 - The dependencies of the root project should be the same as the dependencies of the service modules.
 - Remove any duplicate dependencies.
+- Ensure BOM is visible to subprojects for version alignment
+- Ensure the root project can run the assembled JAR.
 
 ---
 
