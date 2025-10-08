@@ -38,6 +38,9 @@ Fill these before running the instructions:
 - Root project: ROOT_NAME
 - Modules: COMMON_MODULE (java-library), SERVICE_A (library), SERVICE_B (library)
 - Root assembles all modules into one executable Spring Boot JAR.
+- Ensure the root project builds and runs successfully.
+- The dependencies of the root project should be the same as the dependencies of the service modules.
+- Remove any duplicate dependencies.
 
 ---
 
